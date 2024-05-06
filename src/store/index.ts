@@ -1,5 +1,5 @@
 import { thunk } from "redux-thunk";
-import { usersListReducer } from "./reducers";
+import { userAlbumsReducer, userPostsReducer, usersReducer } from "./reducers";
 import {
   applyMiddleware,
   combineReducers,
@@ -7,7 +7,9 @@ import {
 } from "@reduxjs/toolkit";
 
 const rootReducer = combineReducers({
-  usersList: usersListReducer,
+  users: usersReducer,
+  userPosts: userPostsReducer,
+  userAlbums: userAlbumsReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

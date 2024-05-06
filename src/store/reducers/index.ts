@@ -1,3 +1,5 @@
-import usersListReducer from "./usersListReducer";
+import userAlbumsReducer from "./userAlbumsReducer";
+import userPostsReducer from "./userPostsReducer";
+import usersReducer from "./usersReducer";
 
-export { usersListReducer };
+export { userAlbumsReducer, userPostsReducer, usersReducer };

@@ -1,4 +1,4 @@
-import { GET_USERS_LIST, GET_USERS_LIST_ERROR } from "../constants";
+import { GET_USER_POSTS, GET_USER_POSTS_ERROR } from "../constants";
 
 const initialState = {
   data: "",
@@ -7,13 +7,13 @@ const initialState = {
 
 export default (state = initialState, action: any) => {
   switch (action.type) {
-    case GET_USERS_LIST:
+    case GET_USER_POSTS:
       return {
         data: action.payload,
         error: null,
       };
 
-    case GET_USERS_LIST_ERROR:
+    case GET_USER_POSTS_ERROR:
       return {
         ...state,
         error: action.payload,

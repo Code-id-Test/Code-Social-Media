@@ -1,3 +1,5 @@
-import getUsersList from "./getUsersList";
+import getUserAlbums from "./getUserAlbums";
+import getUserPosts from "./getUserPosts";
+import getUsers from "./getUsers";
 
-export { getUsersList };
+export { getUserAlbums, getUserPosts, getUsers };

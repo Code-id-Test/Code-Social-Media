@@ -1,28 +1,29 @@
 import axios from "axios";
-import { GET_USERS_LIST, GET_USERS_LIST_ERROR } from "../constants";
+import { GET_USER_POSTS, GET_USER_POSTS_ERROR } from "../constants";
 
-interface GetUsersListProps {
+interface GetUserPostsProps {
+  userId: number;
   onSuccess?: () => void;
   onError?: () => void;
 }
 
 const setError = (err: any) => {
   return {
-    type: GET_USERS_LIST_ERROR,
+    type: GET_USER_POSTS_ERROR,
     payload: err,
   };
 };
 
-export default (props: GetUsersListProps) => {
+export default (props: GetUserPostsProps) => {
   return async (dispatch: any) =>
     axios
-      .get("https://jsonplaceholder.typicode.com/users", {
+      .get(`https://jsonplaceholder.typicode.com/users/${props.userId}/posts`, {
         headers: { Accept: "application/json" },
       })
       .then((res) => {
         if (res.status === 200) {
           dispatch({
-            type: GET_USERS_LIST,
+            type: GET_USER_POSTS,
             payload: res.data,
           });
           if (props.onSuccess) {

@@ -1,8 +1,9 @@
-import { Typography as MTTypography, TypographyProps as MTTypographyProps } from '@material-tailwind/react'
 import React from 'react'
+import { Typography as MTTypography, TypographyProps as MTTypographyProps } from '@material-tailwind/react'
+import { children } from '@material-tailwind/react/types/components/accordion'
 
 interface TypographyProps extends MTTypographyProps {
-  children: string
+  children: children
   placeholder?: () => void
 }
 
