@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Table, Typography } from "../components"
+import { Loading, Table, Typography } from "../components"
 import { getUserAlbums, getUserPosts, getUsers } from "../store/actions"
 import { useDispatch, useSelector } from "react-redux"
 import { UserAlbumsProps, UserPostsProps, UsersProps } from "../types/dataTypes"
@@ -24,6 +24,9 @@ const Dash = () => {
   const [userAlbums, setUserAlbums] = useState<UserAlbumsProps[]>([])
 
   const renderer = () => {
+    if (loading) {
+      return <Loading />
+    }
     if (page === 'Dash') {
       return (
         <div className="mx-auto py-32 sm:py-8 lg:py-36">
@@ -317,6 +320,7 @@ const Dash = () => {
   }
 
   useEffect(() => {
+    setLoading(true)
     dispatch(
       getUsers({
         onSuccess: () => setLoading(false),
@@ -326,6 +330,7 @@ const Dash = () => {
   }, [])
 
   useEffect(() => {
+    setLoading(true)
     dispatch(
       getUserPosts({
         userId: selectedUserId,
@@ -336,6 +341,7 @@ const Dash = () => {
   }, [selectedUserId])
 
   useEffect(() => {
+    setLoading(true)
     dispatch(
       getUserAlbums({
         userId: selectedUserId,
