@@ -18,7 +18,7 @@ const App = () => {
 
 const Layout = () => {
   return (
-    <div>
+    <div className="bg-white">
       <Navbar />
       <Outlet />
     </div>
