@@ -13,7 +13,7 @@ const Table = (props: TableProps) => {
       className="h-full w-full overflow-scroll"
       placeholder={{}}
     >
-      <table className="w-full min-w-max table-auto text-left">
+      <table className="w-auto table-fixed text-left">
         <thead>
           <tr>
             {props.heads.map((head) => (

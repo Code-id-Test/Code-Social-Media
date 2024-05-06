@@ -9,7 +9,7 @@ const Dash = () => {
   const [loading, setLoading] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(0)
   const [selectedUserAlbums, setSelectedUserAlbums] = useState(0)
-  const [page, setPage] = useState<'Dash' | 'UserContents'>('Dash');
+  const [page, setPage] = useState<'Dash' | 'UserContents' | 'PostDetails'>('Dash');
   const { data: usersQuery } = useSelector(
     (state: any) => state.users
   )
@@ -124,19 +124,16 @@ const Dash = () => {
         <div className="mx-auto py-32 sm:py-8 lg:py-36">
           <div>
             <span className="row">
+              <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl pb-4 mr-4 pressable" onClick={() => {
+                setPage('Dash')
+              }}>
+                ←
+              </h1>
               {users ?
                 <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-2xl pb-4">
                   {users.find(S => S.id === selectedUserId)?.name}'s
                 </h1>
                 : null}
-              <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-2xl pb-4 px-4">
-                |
-              </h1>
-              <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl pb-4 pressable" onClick={() => {
-                setPage('Dash')
-              }}>
-                Go Back
-              </h1>
             </span>
             <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-xl pb-4">
               Posts
@@ -144,7 +141,102 @@ const Dash = () => {
             {userPosts ?
               <Table heads={Object.keys(userPosts.find(S => S) ?? '')}>
                 {userPosts.map(item => (
-                  <tr key={item.id} className="even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
+                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { setPage('PostDetails') }}>
+                    <td className="p-4 pressable" style={{ width: 10 }}>
+                      <Typography variant="small" color="blue-gray" className="font-normal">
+                        {item.id ?? '-'}
+                      </Typography>
+                    </td>
+                    <td className="p-4 pressable">
+                      <Typography variant="small" color="blue-gray" className="font-normal">
+                        {item.title ?? '-'}
+                      </Typography>
+                    </td>
+                    <td className="p-4 pressable">
+                      <Typography variant="small" color="blue-gray" className="font-normal">
+                        {item.body ?? '-'}
+                      </Typography>
+                    </td>
+                  </tr>
+                ))}
+              </Table>
+              : null}
+
+            <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-xl pb-4 py-12">
+              Albums
+            </h1>
+            {userAlbums ?
+              <Table heads={Object.keys(userAlbums.find(S => S) ?? '')}>
+                {userAlbums.map(item => (
+                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
+                    <td className="p-4 pressable w-fit">
+                      <Typography variant="small" color="blue-gray" className="font-normal">
+                        {item.id ?? '-'}
+                      </Typography>
+                    </td>
+                    <td className="p-4 w-full pressable">
+                      <Typography variant="small" color="blue-gray" className="font-normal">
+                        {item.title ?? '-'}
+                      </Typography>
+                    </td>
+                    {/* <td className="p-4">
+                     <Typography as="a" href="#" variant="small" color="blue-gray" className="font-medium">
+                       Edit
+                     </Typography>
+                   </td> */}
+                  </tr>
+                ))}
+              </Table>
+              : null}
+          </div>
+
+          {/* <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div className="text-center">
+           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              Social Media Dashboard
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
+              fugiat veniam occaecat fugiat aliqua.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href="#"
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Get started
+              </a>
+              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+                Learn more <span aria-hidden="true">→</span>
+              </a>
+            </div> 
+            </div> */}
+        </div>
+      )
+    }
+    if (page === 'PostDetails') {
+      return (
+        <div className="mx-auto py-32 sm:py-8 lg:py-36">
+          <div>
+            <span className="row">
+              <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl mr-4 pressable" onClick={() => {
+                setPage('Dash')
+              }}>
+                ←
+              </h1>
+              {users ?
+                <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-2xl pb-4">
+                  Post Details
+                </h1>
+                : null}
+            </span>
+            <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-xl pb-4">
+              POST_TITLE
+            </h1>
+            {userPosts ?
+              <Table heads={Object.keys(userPosts.find(S => S) ?? '')}>
+                {userPosts.map(item => (
+                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
                     <td className="p-4 pressable">
                       <Typography variant="small" color="blue-gray" className="font-normal">
                         {item.id ?? '-'}
@@ -176,7 +268,7 @@ const Dash = () => {
             {userAlbums ?
               <Table heads={Object.keys(userAlbums.find(S => S) ?? '')}>
                 {userAlbums.map(item => (
-                  <tr key={item.id} className="even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
+                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
                     <td className="p-4 pressable">
                       <Typography variant="small" color="blue-gray" className="font-normal">
                         {item.id ?? '-'}
