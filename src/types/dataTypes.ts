@@ -23,6 +23,13 @@ export interface UserPostsProps {
   body: string;
 }
 
+export interface PostDetailsProps {
+  id: number;
+  userId: number;
+  title: string;
+  body: string;
+}
+
 export interface UserAlbumsProps {
   id: number;
   userId: number;

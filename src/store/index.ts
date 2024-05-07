@@ -1,5 +1,10 @@
 import { thunk } from "redux-thunk";
-import { userAlbumsReducer, userPostsReducer, usersReducer } from "./reducers";
+import {
+  postDetailsReducer,
+  userAlbumsReducer,
+  userPostsReducer,
+  usersReducer,
+} from "./reducers";
 import {
   applyMiddleware,
   combineReducers,
@@ -9,6 +14,7 @@ import {
 const rootReducer = combineReducers({
   users: usersReducer,
   userPosts: userPostsReducer,
+  postDetails: postDetailsReducer,
   userAlbums: userAlbumsReducer,
 });
 

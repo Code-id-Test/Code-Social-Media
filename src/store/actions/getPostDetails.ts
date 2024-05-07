@@ -1,7 +1,7 @@
 import axios from "axios";
-import { GET_USER_ALBUMS, GET_USER_ALBUMS_ERROR } from "../constants";
+import { GET_POST_DETAILS, GET_POST_DETAILS_ERROR } from "../constants";
 
-interface GetUserAlbumsProps {
+interface GetPostDetailsProps {
   id: number;
   onSuccess?: () => void;
   onError?: () => void;
@@ -9,21 +9,21 @@ interface GetUserAlbumsProps {
 
 const setError = (err: any) => {
   return {
-    type: GET_USER_ALBUMS_ERROR,
+    type: GET_POST_DETAILS_ERROR,
     payload: err,
   };
 };
 
-export default (props: GetUserAlbumsProps) => {
+export default (props: GetPostDetailsProps) => {
   return async (dispatch: any) =>
     axios
-      .get(`https://jsonplaceholder.typicode.com/users/${props.id}/albums`, {
+      .get(`https://jsonplaceholder.typicode.com/posts/${props.id}`, {
         headers: { Accept: "application/json" },
       })
       .then((res) => {
         if (res.status === 200) {
           dispatch({
-            type: GET_USER_ALBUMS,
+            type: GET_POST_DETAILS,
             payload: res.data,
           });
           if (props.onSuccess) {

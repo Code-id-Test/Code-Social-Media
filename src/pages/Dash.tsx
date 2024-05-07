@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react"
-import { Loading, Table, Typography } from "../components"
-import { getUserAlbums, getUserPosts, getUsers } from "../store/actions"
 import { useDispatch, useSelector } from "react-redux"
-import { UserAlbumsProps, UserPostsProps, UsersProps } from "../types/dataTypes"
+import { Loading, Table, Typography } from "../components"
+import { getPostDetails, getUserAlbums, getUserPosts, getUsers } from "../store/actions"
+import { PostDetailsProps, UserAlbumsProps, UserPostsProps, UsersProps } from "../types/dataTypes"
+
+
 
 const Dash = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [selectedUserId, setSelectedUserId] = useState(0)
+  const [selectedPostId, setSelectedPostId] = useState(0)
   const [selectedUserAlbums, setSelectedUserAlbums] = useState(0)
   const [page, setPage] = useState<'Dash' | 'UserContents' | 'PostDetails'>('Dash');
   const { data: usersQuery } = useSelector(
@@ -16,11 +19,15 @@ const Dash = () => {
   const { data: userPostsQuery } = useSelector(
     (state: any) => state.userPosts
   )
+  const { data: postDetailsQuery } = useSelector(
+    (state: any) => state.postDetails
+  )
   const { data: userAlbumsQuery } = useSelector(
     (state: any) => state.userAlbums
   )
   const [users, setUsers] = useState<UsersProps[]>([])
   const [userPosts, setUserPosts] = useState<UserPostsProps[]>([])
+  const [postDetails, setPostDetails] = useState<PostDetailsProps>()
   const [userAlbums, setUserAlbums] = useState<UserAlbumsProps[]>([])
 
   const renderer = () => {
@@ -144,7 +151,14 @@ const Dash = () => {
             {userPosts ?
               <Table heads={Object.keys(userPosts.find(S => S) ?? '')}>
                 {userPosts.map(item => (
-                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { setPage('PostDetails') }}>
+                  <tr
+                    key={item.id}
+                    className="hover-bar even:bg-blue-gray-50/50"
+                    onClick={() => {
+                      setSelectedPostId(item.id)
+                      setPage('PostDetails')
+                    }}
+                  >
                     <td className="p-4 pressable" style={{ width: 10 }}>
                       <Typography variant="small" color="blue-gray" className="font-normal">
                         {item.id ?? '-'}
@@ -234,36 +248,9 @@ const Dash = () => {
                 : null}
             </span>
             <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-xl pb-4">
-              POST_TITLE
+              {postDetails?.title}
             </h1>
-            {userPosts ?
-              <Table heads={Object.keys(userPosts.find(S => S) ?? '')}>
-                {userPosts.map(item => (
-                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
-                    <td className="p-4 pressable">
-                      <Typography variant="small" color="blue-gray" className="font-normal">
-                        {item.id ?? '-'}
-                      </Typography>
-                    </td>
-                    <td className="p-4 pressable">
-                      <Typography variant="small" color="blue-gray" className="font-normal">
-                        {item.title ?? '-'}
-                      </Typography>
-                    </td>
-                    <td className="p-4 pressable">
-                      <Typography variant="small" color="blue-gray" className="font-normal">
-                        {item.body ?? '-'}
-                      </Typography>
-                    </td>
-                    {/* <td className="p-4">
-                     <Typography as="a" href="#" variant="small" color="blue-gray" className="font-medium">
-                       Edit
-                     </Typography>
-                   </td> */}
-                  </tr>
-                ))}
-              </Table>
-              : null}
+            <p>{postDetails?.body}</p>
 
             <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-xl pb-4 py-12">
               Albums
@@ -343,8 +330,19 @@ const Dash = () => {
   useEffect(() => {
     setLoading(true)
     dispatch(
+      getPostDetails({
+        id: selectedPostId,
+        onSuccess: () => setLoading(false),
+        onError: () => setLoading(false),
+      })
+    )
+  }, [selectedUserId])
+
+  useEffect(() => {
+    setLoading(true)
+    dispatch(
       getUserAlbums({
-        userId: selectedUserId,
+        id: selectedUserId,
         onSuccess: () => setLoading(false),
         onError: () => setLoading(false),
       })
@@ -355,7 +353,8 @@ const Dash = () => {
     setUsers(usersQuery)
     setUserPosts(userPostsQuery)
     setUserAlbums(userAlbumsQuery)
-  }, [usersQuery, userPostsQuery, userAlbumsQuery])
+    setPostDetails(postDetailsQuery)
+  }, [usersQuery, userPostsQuery, userAlbumsQuery, postDetailsQuery])
 
   return (
     <div className="relative isolate px-6 pt-14 lg:px-8">
