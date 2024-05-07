@@ -1,5 +1,6 @@
 import { thunk } from "redux-thunk";
 import {
+  albumPhotosReducer,
   postDetailsReducer,
   userAlbumsReducer,
   userPostsReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   userPosts: userPostsReducer,
   postDetails: postDetailsReducer,
   userAlbums: userAlbumsReducer,
+  albumPhotos: albumPhotosReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

@@ -35,3 +35,11 @@ export interface UserAlbumsProps {
   userId: number;
   title: string;
 }
+
+export interface AlbumPhotosProps {
+  albumId: number;
+  id: number;
+  title: string;
+  url: string;
+  thumbnailUrl: string;
+}

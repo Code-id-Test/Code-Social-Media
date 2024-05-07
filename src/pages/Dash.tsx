@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Loading, Table, Typography } from "../components"
-import { getPostDetails, getUserAlbums, getUserPosts, getUsers } from "../store/actions"
+import { getAlbumPhotos, getPostDetails, getUserAlbums, getUserPosts, getUsers } from "../store/actions"
 import { PostDetailsProps, UserAlbumsProps, UserPostsProps, UsersProps } from "../types/dataTypes"
-
-
 
 const Dash = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false)
   const [selectedUserId, setSelectedUserId] = useState(0)
   const [selectedPostId, setSelectedPostId] = useState(0)
-  const [selectedUserAlbums, setSelectedUserAlbums] = useState(0)
-  const [page, setPage] = useState<'Dash' | 'UserContents' | 'PostDetails'>('Dash');
+  const [selectedAlbumId, setSelectedAlbumId] = useState(0)
+  const [page, setPage] = useState<'Dash' | 'UserContents' | 'PostDetails' | 'UserAlbums'>('Dash');
   const { data: usersQuery } = useSelector(
     (state: any) => state.users
   )
@@ -25,10 +23,14 @@ const Dash = () => {
   const { data: userAlbumsQuery } = useSelector(
     (state: any) => state.userAlbums
   )
+  const { data: albumPhotosQuery } = useSelector(
+    (state: any) => state.albumPhotos
+  )
   const [users, setUsers] = useState<UsersProps[]>([])
   const [userPosts, setUserPosts] = useState<UserPostsProps[]>([])
   const [postDetails, setPostDetails] = useState<PostDetailsProps>()
   const [userAlbums, setUserAlbums] = useState<UserAlbumsProps[]>([])
+  const [albumPhotos, setAlbumPhotos] = useState<UserAlbumsProps[]>([])
 
   const renderer = () => {
     if (loading) {
@@ -185,7 +187,14 @@ const Dash = () => {
             {userAlbums ?
               <Table heads={Object.keys(userAlbums.find(S => S) ?? '')}>
                 {userAlbums.map(item => (
-                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
+                  <tr
+                    key={item.id}
+                    className="hover-bar even:bg-blue-gray-50/50"
+                    onClick={() => {
+                      setSelectedAlbumId(item.id)
+                      setPage('UserAlbums')
+                    }}
+                  >
                     <td className="p-4 pressable w-fit">
                       <Typography variant="small" color="blue-gray" className="font-normal">
                         {item.id ?? '-'}
@@ -251,33 +260,61 @@ const Dash = () => {
               {postDetails?.title}
             </h1>
             <p>{postDetails?.body}</p>
+          </div>
 
-            <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-xl pb-4 py-12">
-              Albums
+          {/* <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div className="text-center">
+           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              Social Media Dashboard
             </h1>
-            {userAlbums ?
-              <Table heads={Object.keys(userAlbums.find(S => S) ?? '')}>
-                {userAlbums.map(item => (
-                  <tr key={item.id} className="hover-bar even:bg-blue-gray-50/50" onClick={() => { alert(item.id) }}>
-                    <td className="p-4 pressable">
-                      <Typography variant="small" color="blue-gray" className="font-normal">
-                        {item.id ?? '-'}
-                      </Typography>
-                    </td>
-                    <td className="p-4 pressable">
-                      <Typography variant="small" color="blue-gray" className="font-normal">
-                        {item.title ?? '-'}
-                      </Typography>
-                    </td>
-                    {/* <td className="p-4">
-                     <Typography as="a" href="#" variant="small" color="blue-gray" className="font-medium">
-                       Edit
-                     </Typography>
-                   </td> */}
-                  </tr>
-                ))}
-              </Table>
-              : null}
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
+              fugiat veniam occaecat fugiat aliqua.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href="#"
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Get started
+              </a>
+              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+                Learn more <span aria-hidden="true">→</span>
+              </a>
+            </div> 
+            </div> */}
+        </div>
+      )
+    }
+    if (page === 'UserAlbums') {
+      return (
+        <div className="mx-auto py-32 sm:py-8 lg:py-36">
+          <div>
+            <span className="row">
+              <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl pb-4 mr-4 pressable" onClick={() => {
+                setPage('Dash')
+              }}>
+                ←
+              </h1>
+              {users ?
+                <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-2xl pb-4">
+                  {users.find(S => S.id === selectedUserId)?.name}'s Album
+                </h1>
+                : null}
+            </span>
+            <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-xl pb-4">
+              {userAlbums.find(S => S.id)?.title}
+            </h1>
+
+            {albumPhotos.length > 0 ?
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {albumPhotos?.map(item =>
+                  <div>
+                    <img className="h-auto max-w-full rounded-lg" src={item?.url} alt="" />
+                  </div>
+                )}
+              </div>
+              : <p>This album photo is empty</p>}
           </div>
 
           {/* <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
@@ -336,10 +373,6 @@ const Dash = () => {
         onError: () => setLoading(false),
       })
     )
-  }, [selectedUserId])
-
-  useEffect(() => {
-    setLoading(true)
     dispatch(
       getUserAlbums({
         id: selectedUserId,
@@ -350,11 +383,31 @@ const Dash = () => {
   }, [selectedUserId])
 
   useEffect(() => {
+    setLoading(true)
+    dispatch(
+      getAlbumPhotos({
+        albumId: selectedAlbumId,
+        onSuccess: () => setLoading(false),
+        onError: () => setLoading(false),
+      })
+    )
+  }, [selectedUserId])
+
+  useEffect(() => {
     setUsers(usersQuery)
+  }, [usersQuery])
+  useEffect(() => {
     setUserPosts(userPostsQuery)
+  }, [userPostsQuery])
+  useEffect(() => {
     setUserAlbums(userAlbumsQuery)
+  }, [userAlbumsQuery])
+  useEffect(() => {
     setPostDetails(postDetailsQuery)
-  }, [usersQuery, userPostsQuery, userAlbumsQuery, postDetailsQuery])
+  }, [postDetailsQuery])
+  useEffect(() => {
+    setAlbumPhotos(albumPhotosQuery)
+  }, [albumPhotosQuery])
 
   return (
     <div className="relative isolate px-6 pt-14 lg:px-8">
