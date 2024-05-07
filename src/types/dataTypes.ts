@@ -30,6 +30,14 @@ export interface PostDetailsProps {
   body: string;
 }
 
+export interface PostCommentsProps {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
 export interface UserAlbumsProps {
   id: number;
   userId: number;

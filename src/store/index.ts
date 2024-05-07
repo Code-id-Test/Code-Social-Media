@@ -1,6 +1,7 @@
 import { thunk } from "redux-thunk";
 import {
   albumPhotosReducer,
+  postCommentsReducer,
   postDetailsReducer,
   userAlbumsReducer,
   userPostsReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   users: usersReducer,
   userPosts: userPostsReducer,
   postDetails: postDetailsReducer,
+  postComments: postCommentsReducer,
   userAlbums: userAlbumsReducer,
   albumPhotos: albumPhotosReducer,
 });

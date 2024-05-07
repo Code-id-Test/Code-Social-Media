@@ -18,10 +18,10 @@ const App = () => {
 
 const Layout = () => {
   return (
-    <div className="bg-white">
-      <Navbar />
+    <div className="dark:bg-gray-800">
+      < Navbar />
       <Outlet />
-    </div>
+    </div >
   )
 }
 
