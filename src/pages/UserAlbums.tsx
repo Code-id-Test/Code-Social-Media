@@ -32,7 +32,7 @@ const UserAlbums = (props: UserAlbumsProps) => {
         </h1>
 
         {props.photos.length > 0 ?
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid lg:grid-cols-12 md:grid-cols-6 gap-4">
             {props.photos?.map(item =>
               <div
                 key={item.id}
