@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Comments, Loading, Table, Typography } from "../components"
+import { Loading, Table, Typography } from "../components"
 import { getAlbumPhotos, getPostComments, getPostDetails, getUserAlbums, getUserPosts, getUsers } from "../store/actions"
-import { PostCommentsProps, PostDetailsProps, UserAlbumsProps, UserPostsProps, UsersProps } from "../types/dataTypes"
+import { AlbumPhotosProps, PostCommentsProps, PostDetailsProps, UserAlbumsProps, UserPostsProps, UsersProps } from "../types/dataTypes"
 import UserContents from "./UserContents"
+import PostDetails from "./PostDetails"
+import UserAlbums from "./UserAlbums"
+import PhotoDetails from "./PhotoDetails"
 
 const Dash = () => {
   const dispatch = useDispatch();
@@ -11,7 +14,7 @@ const Dash = () => {
   const [selectedUserId, setSelectedUserId] = useState(0)
   const [selectedPostId, setSelectedPostId] = useState(0)
   const [selectedAlbumId, setSelectedAlbumId] = useState(0)
-  const [page, setPage] = useState<'Dash' | 'UserContents' | 'PostDetails' | 'UserAlbums'>('Dash');
+  const [page, setPage] = useState<'Dash' | 'UserContents' | 'PostDetails' | 'UserAlbums' | 'PhotoDetails'>('Dash');
   const { data: usersQuery } = useSelector(
     (state: any) => state.users
   )
@@ -35,7 +38,8 @@ const Dash = () => {
   const [postDetails, setPostDetails] = useState<PostDetailsProps>()
   const [postComments, setPostComments] = useState<PostCommentsProps[]>([])
   const [userAlbums, setUserAlbums] = useState<UserAlbumsProps[]>([])
-  const [albumPhotos, setAlbumPhotos] = useState<UserAlbumsProps[]>([])
+  const [albumPhotos, setAlbumPhotos] = useState<AlbumPhotosProps[]>([])
+  const [selectedPhoto, setSelectedPhoto] = useState<AlbumPhotosProps>()
 
   const renderer = () => {
     if (loading) {
@@ -45,7 +49,12 @@ const Dash = () => {
       return (
         <div className="mx-auto py-32 sm:py-8 lg:py-36">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-2xl pb-4">
+            <span className="row">
+              <h1 className="text-2xl tracking-tight text-white sm:text-2xl pb-4">
+                Social Media Dashboard
+              </h1>
+            </span>
+            <h1 className="text-xl font-semibold tracking-tight text-white sm:text-xl pb-4">
               Users
             </h1>
             {users ?
@@ -155,105 +164,43 @@ const Dash = () => {
       )
     }
     if (page === 'PostDetails') {
-      return (
-        <div className="mx-auto py-32 sm:py-8 lg:py-36">
-          <div>
-            <span className="row">
-              <h1 className="text-2xl tracking-tight text-white sm:text-2xl mr-4 pressable" onClick={() => {
-                setPage('Dash')
-              }}>
-                ←
-              </h1>
-              {users ?
-                <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-2xl pb-4">
-                  Post Details
-                </h1>
-                : null}
-            </span>
-            <h1 className="text-xl font-semibold tracking-tight text-white sm:text-xl pb-4">
-              {postDetails?.title}
-            </h1>
-            <p className="text-white pb-8">{postDetails?.body}</p>
-            <Comments comments={postComments} />
-          </div>
-
-          {/* <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-          <div className="text-center">
-           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-              Social Media Dashboard
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-              fugiat veniam occaecat fugiat aliqua.
-            </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Get started
-              </a>
-              <a href="#" className="text-sm font-semibold leading-6 text-white">
-                Learn more <span aria-hidden="true">→</span>
-              </a>
-            </div> 
-            </div> */}
-        </div>
-      )
+      return (<PostDetails
+        post={postDetails ?? null}
+        comments={postComments}
+        cursors={{ userId: selectedUserId }}
+        onGoBack={() => {
+          setPage('UserContents')
+        }}
+      />)
     }
     if (page === 'UserAlbums') {
       return (
-        <div className="mx-auto py-32 sm:py-8 lg:py-36">
-          <div>
-            <span className="row">
-              <h1 className="text-2xl tracking-tight text-white sm:text-2xl pb-4 mr-4 pressable" onClick={() => {
-                setPage('Dash')
-              }}>
-                ←
-              </h1>
-              {users ?
-                <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-2xl pb-4">
-                  {users.find(S => S.id === selectedUserId)?.name}'s Album
-                </h1>
-                : null}
-            </span>
-            <h1 className="text-xl font-semibold tracking-tight text-white sm:text-xl pb-4">
-              {userAlbums.find(S => S.id)?.title}
-            </h1>
-
-            {albumPhotos.length > 0 ?
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {albumPhotos?.map(item =>
-                  <div>
-                    <img className="h-auto max-w-full rounded-lg" src={item?.url} alt="" />
-                  </div>
-                )}
-              </div>
-              : <p>This album photo is empty</p>}
-          </div>
-
-          {/* <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-          <div className="text-center">
-           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-              Social Media Dashboard
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-              fugiat veniam occaecat fugiat aliqua.
-            </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Get started
-              </a>
-              <a href="#" className="text-sm font-semibold leading-6 text-white">
-                Learn more <span aria-hidden="true">→</span>
-              </a>
-            </div> 
-            </div> */}
-        </div>
+        <UserAlbums
+          users={users}
+          albums={userAlbums}
+          photos={albumPhotos}
+          cursors={{
+            userId: selectedUserId,
+            albumId: selectedAlbumId
+          }}
+          onGoBack={() => {
+            setPage('UserContents')
+          }}
+          onClick={(id) => {
+            setSelectedPhoto(albumPhotos.find(S => S.id === id))
+            setPage('PhotoDetails')
+          }}
+        />
+      )
+    }
+    if (page === 'PhotoDetails') {
+      return (
+        <PhotoDetails
+          photo={selectedPhoto}
+          onGoBack={() => {
+            setPage('UserAlbums')
+          }}
+        />
       )
     }
   }
@@ -269,55 +216,57 @@ const Dash = () => {
   }, [])
 
   useEffect(() => {
-    setLoading(true)
-    dispatch(
-      getUserPosts({
-        userId: selectedUserId,
-        onSuccess: () => setLoading(false),
-        onError: () => setLoading(false),
-      })
-    )
+    if (selectedUserId !== 0) {
+      setLoading(true)
+      dispatch(
+        getUserPosts({
+          userId: selectedUserId,
+          onSuccess: () => setLoading(false),
+          onError: () => setLoading(false),
+        })
+      )
+      dispatch(
+        getUserAlbums({
+          id: selectedUserId,
+          onSuccess: () => setLoading(false),
+          onError: () => setLoading(false),
+        })
+      )
+    }
   }, [selectedUserId])
 
   useEffect(() => {
-    setLoading(true)
-    dispatch(
-      getPostDetails({
-        id: selectedPostId,
-        onSuccess: () => setLoading(false),
-        onError: () => setLoading(false),
-      })
-    )
-    dispatch(
-      getPostComments({
-        postId: selectedPostId,
-        onSuccess: () => setLoading(false),
-        onError: () => setLoading(false),
-      })
-    )
+    if (selectedPostId !== 0) {
+      setLoading(true)
+      dispatch(
+        getPostDetails({
+          id: selectedPostId,
+          onSuccess: () => setLoading(false),
+          onError: () => setLoading(false),
+        })
+      )
+      dispatch(
+        getPostComments({
+          postId: selectedPostId,
+          onSuccess: () => setLoading(false),
+          onError: () => setLoading(false),
+        })
+      )
+    }
   }, [selectedPostId])
 
   useEffect(() => {
-    setLoading(true)
-    dispatch(
-      getUserAlbums({
-        id: selectedUserId,
-        onSuccess: () => setLoading(false),
-        onError: () => setLoading(false),
-      })
-    )
-  }, [selectedUserId])
-
-  useEffect(() => {
-    setLoading(true)
-    dispatch(
-      getAlbumPhotos({
-        albumId: selectedAlbumId,
-        onSuccess: () => setLoading(false),
-        onError: () => setLoading(false),
-      })
-    )
-  }, [selectedUserId])
+    if (selectedAlbumId !== 0) {
+      setLoading(true)
+      dispatch(
+        getAlbumPhotos({
+          albumId: selectedAlbumId,
+          onSuccess: () => setLoading(false),
+          onError: () => setLoading(false),
+        })
+      )
+    }
+  }, [selectedAlbumId])
 
   useEffect(() => {
     setUsers(usersQuery)
