@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Loading, Table, Typography } from "../components"
 import { getAlbumPhotos, getPostComments, getPostDetails, getUserAlbums, getUserPosts, getUsers } from "../store/actions"
 import { AlbumPhotosProps, PostCommentsProps, PostDetailsProps, UserAlbumsProps, UserPostsProps, UsersProps } from "../types/dataTypes"
-import UserContents from "./UserContents"
-import PostDetails from "./PostDetails"
-import UserAlbums from "./UserAlbums"
-import PhotoDetails from "./PhotoDetails"
+import { Loading, Table, Typography } from "../components"
+import { PhotoDetails, PostDetails, UserAlbums, UserContents } from "."
 
 const Dash = () => {
   const dispatch = useDispatch();
